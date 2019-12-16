@@ -2,22 +2,21 @@
 #include <SFML/Window.hpp>
 #include <time.h>
 #include <iostream>
+#include <list>
 using namespace sf;
 
 int main()
 {
-    float dx=6; 
-    float dy=5;
-    float x=300;
-    float y=300;
-    int deathMaxCount = 3;
-    int deathCount = 0;
+
+
+
+    
     srand(time(0));
 
     RenderWindow app(VideoMode(1000, 560), "_" );
     app.setFramerateLimit(60);
 
-    Texture t1, t2, t3, t4, t5, t6, t7, t8,t9, t10, t11, t12;
+    Texture t1, t2, t3, t4, t5, t6, t7, t8,t9, t10, t11, t12, t13, t14;
     t1.loadFromFile("bl1.png");
     t2.loadFromFile("sky_blue.jpg");
     t3.loadFromFile("ball.png");
@@ -30,31 +29,45 @@ int main()
     t10.loadFromFile("playc.png");
     t11.loadFromFile("arc.png");
     t12.loadFromFile("records.png");
+    t13.loadFromFile("score.png");
+    t14.loadFromFile("menu.png");
 
 
    
 
 
-    Sprite sBackground(t2), sBall(t3), sPaddle(t4), sMenu(t9), sPlay(t10), sArcanoid(t11), sRecords(t12);
+    Sprite sBackground(t2), sBall(t3), sPaddle(t4), sMenu(t9), sPlay(t10), sArcanoid(t11), sRecords(t12), sScore(t13), sMenuBut(t14);
     sPaddle.setPosition(470 , 550);
     sPlay.setPosition(sf::Vector2f(430, 300)); 
     sArcanoid.setPosition(sf::Vector2f(200,60));
     sRecords.setPosition(sf::Vector2f(380, 400));
+    sScore.setPosition(sf::Vector2f(150, 300));
+    sMenuBut.setPosition(sf::Vector2f(30, 500));
+
 
 
     Sprite block[10000];
-    int collisions[1000];
+    
 
-
+    float dt = 0.1;
     int n = 0;
     int k = 0;
-    int a = 0;
-    int counter = 0;
+    int playButton = 0;
+    int recButton = 0;
+    int menuButton = 0;
+    float vx=60; 
+    float vy=50;
+    float x=300;
+    float y=300;
+    //list <string> records;
+    int deathMaxCount = 2;
+    int deathCount = 0;
+    int scoreCount = 0;
     for (int i = 0; i <= 19; i++)
     {
         for (int j = 0; j <= 1; j++)
           {  
-             collisions[n] = int(5);
+             
              block[n].setTexture(t1);
              block[n].setPosition(i*50,j*24);
              n++;
@@ -62,28 +75,28 @@ int main()
      
         for (int j = 2; j <= 3; j++)
           {
-             collisions[n] = int(4);
+           
              block[n].setTexture(t5);
              block[n].setPosition(i*50,j*24);
              n++;
           }
         for (int j = 4; j <= 5; j++)
           {
-            collisions[n] = int(3);
+            
              block[n].setTexture(t6);
              block[n].setPosition(i*50,j*24);
              n++;
           }
         for (int j = 6; j <= 7; j++)
           {
-            collisions[n] = int(2);
+           
              block[n].setTexture(t7);
              block[n].setPosition(i*50,j*24);
              n++;
           }
-        for (int j = 8; j<=9; j++)
+        for (int j = 8; j <= 9; j++)
           {
-            collisions[n] = int(1);
+           
              block[n].setTexture(t8);
              block[n].setPosition(i*50,j*24);
              n++;
@@ -108,40 +121,68 @@ int main()
          app.draw(sArcanoid);
          app.draw(sRecords);
 
+         if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app))))
+            {
+                recButton += 1;
+            }
+            if (recButton > 0)
+            {
+                sRecords.setPosition(sf::Vector2f(30, 40));
+                app.draw(sMenu);
+                app.draw(sRecords);
+                app.draw(sMenuBut);
 
+            }
+                if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (sf::IntRect(30, 500, 200, 100).contains(sf::Mouse::getPosition(app))))
+                    menuButton += 2;
+            
+           if (menuButton > 0)
+           {
+             sRecords.setPosition(sf::Vector2f(380, 400));
+             app.draw(sMenu);
+             app.draw(sPlay);
+             app.draw(sArcanoid);
+             app.draw(sRecords);
+             menuButton = 0;
+             recButton = 0;
+            }
 
          if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (sf::IntRect(430, 300, 200, 80).contains(sf::Mouse::getPosition(app))))
             {
-            a = a + 1;
+            playButton += 1;
             }
 
-            if (a > 0)
+
+            if (playButton > 0)
             {
-                x += dx;
+                x += vx*dt;
                 for (int i = 0; i < n; i++)
-                    if (FloatRect(x+3, y+3, 6, 6).intersects(block[i].getGlobalBounds()))
+                    if (FloatRect(x + 3, y + 3, 6, 6).intersects(block[i].getGlobalBounds()))
                          {  
                             block[i].setPosition(-100,0);
-                            counter += 1;
-                            dx = -dx;
+                            scoreCount += int(1);
+                            vx = -vx;
                          }
 
-                y += dy;
+                y += vy*dt;
                 for (int i = 0; i < n; i++)
-                    if ( FloatRect( x+3, y+3, 6, 6).intersects(block[i].getGlobalBounds()))
+                    if ( FloatRect( x + 3, y + 3, 6, 6).intersects(block[i].getGlobalBounds()))
                         {
                             block[i].setPosition(-100,0);
-                            dy = -dy;
+                            scoreCount += int(1);
+                            vy = -vy;
                         }
 
-                if (x < 0 || x > 1000)  dx = -dx;
-                if (y < 0) dy = -dy;
+                if (x < 0 || x > 1000)  
+                    vx = -vx;
+                if (y < 0) 
+                    vy = -vy;
 
                 if (y > 560)
                 {
-                    if (FloatRect(x+3, y+3, 6, 6).intersects(sPaddle.getGlobalBounds()))
+                    if (FloatRect(x + 3, y + 3, 6, 6).intersects(sPaddle.getGlobalBounds()))
                     {
-                        dy = -dy;
+                        vy = -vy;
                     }
                     else
                     {
@@ -151,24 +192,31 @@ int main()
                                 
                                 deathCount++;
                                 sPaddle.setPosition(470,550);
-                                dx = 0;
-                                dy = 8;
-                                x = 550;
-                                y = 400;
+                                vx = 50;
+                                vy = 60;
+                                x = 300;
+                                y = 300;
                         }
 
                     
                         else
+
                         {
+                           
+                          //  std::cout << scoreCount << std::endl;
                             return 0;
+                            
                         }
                     }
                 }
 
-                if (Keyboard::isKeyPressed(Keyboard::Right)) sPaddle.move(6,0);
-                if (Keyboard::isKeyPressed(Keyboard::Left)) sPaddle.move(-6,0);
+                if (Keyboard::isKeyPressed(Keyboard::Right)) 
+                    sPaddle.move(6, 0);
+                if (Keyboard::isKeyPressed(Keyboard::Left)) 
+                    sPaddle.move(-6, 0);
 
-                if ( FloatRect(x,y,12,12).intersects(sPaddle.getGlobalBounds()) ) dy=-(rand()%5+2);
+                if ( FloatRect(x, y, 12, 12).intersects(sPaddle.getGlobalBounds())) 
+                    vy = -vy;
 
                 sBall.setPosition(x,y);
                 app.clear();
@@ -180,10 +228,11 @@ int main()
             }
            
 
-
-           
             app.display();
             }
             
-  return 0;
+
+delete [] block;
+return 0;
 }
+  
