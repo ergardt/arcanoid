@@ -16,7 +16,7 @@ int main()
     RenderWindow app(VideoMode(1000, 560), "_" );
     app.setFramerateLimit(60);
 
-    Texture t1, t2, t3, t4, t5, t6, t7, t8,t9, t10, t11, t12, t13, t14;
+    Texture t1, t2, t3, t4, t5, t6, t7, t8,t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21;
     t1.loadFromFile("bl1.png");
     t2.loadFromFile("sky_blue.jpg");
     t3.loadFromFile("ball.png");
@@ -31,18 +31,34 @@ int main()
     t12.loadFromFile("records.png");
     t13.loadFromFile("score.png");
     t14.loadFromFile("menu.png");
+    t15.loadFromFile("level1.png");
+    t16.loadFromFile("level2.png");
+    t17.loadFromFile("level3.png");
+    t18.loadFromFile("continue.png");
+    t19.loadFromFile("recordsBig.png");
+    t20.loadFromFile("playBig.png");
+    t21.loadFromFile("menuBig.png");
+
 
 
    
 
 
-    Sprite sBackground(t2), sBall(t3), sPaddle(t4), sMenu(t9), sPlay(t10), sArcanoid(t11), sRecords(t12), sScore(t13), sMenuBut(t14);
+    Sprite sBackground(t2), sBall(t3), sPaddle(t4), sMenu(t9), sPlay(t10), sArcanoid(t11), sRecords(t12), 
+    sScore(t13), sMenuBut(t14), sLevel1(t15), sLevel2(t16), sLevel3(t17), sContinue(t18), 
+    sRecordsBig(t19), sPlayBig(t20), sMenuBig(t21);
     sPaddle.setPosition(470 , 550);
     sPlay.setPosition(sf::Vector2f(430, 300)); 
     sArcanoid.setPosition(sf::Vector2f(200,60));
     sRecords.setPosition(sf::Vector2f(380, 400));
     sScore.setPosition(sf::Vector2f(150, 300));
-    sMenuBut.setPosition(sf::Vector2f(30, 500));
+    sMenuBut.setPosition(sf::Vector2f(60, 450));
+    sLevel1.setPosition(sf::Vector2f(200, 400));
+    sContinue.setPosition(sf::Vector2f(150, 480));
+    sPlayBig.setPosition(sf::Vector2f(400, 285));
+    sRecordsBig.setPosition(sf::Vector2f(330, 380));
+    sMenuBig.setPosition(sf::Vector2f(30, 420));
+
 
 
 
@@ -121,10 +137,25 @@ int main()
          app.draw(sArcanoid);
          app.draw(sRecords);
 
-         if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app))))
+        
+         if (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app))) 
+        {
+             
+             app.draw(sMenu);
+             app.draw(sPlay);
+             app.draw(sArcanoid);
+             app.draw(sRecordsBig);
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
             {
                 recButton += 1;
             }
+            if  (not (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app))))
+               {
+                     sRecords.setPosition(sf::Vector2f(380, 400));
+                     app.draw(sPlay); 
+                }
+        }
+
             if (recButton > 0)
             {
                 sRecords.setPosition(sf::Vector2f(30, 40));
@@ -133,8 +164,16 @@ int main()
                 app.draw(sMenuBut);
 
             }
-                if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (sf::IntRect(30, 500, 200, 100).contains(sf::Mouse::getPosition(app))))
+            if  ((sf::IntRect(30, 450, 200, 100).contains(sf::Mouse::getPosition(app))) && (recButton > 0))
+            {
+                app.draw(sMenu);
+                app.draw(sRecords);
+                app.draw(sMenuBig);
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+                {
                     menuButton += 2;
+                }
+            }
             
            if (menuButton > 0)
            {
@@ -147,14 +186,35 @@ int main()
              recButton = 0;
             }
 
-         if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (sf::IntRect(430, 300, 200, 80).contains(sf::Mouse::getPosition(app))))
+         if  ((sf::IntRect(430, 300, 200, 80).contains(sf::Mouse::getPosition(app))) && (recButton == 0))
+
             {
-            playButton += 1;
+                if (menuButton == 0)
+                {
+                app.draw(sMenu);
+                app.draw(sPlayBig);
+                app.draw(sArcanoid);
+                app.draw(sRecords);
+                
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+                    {
+                         playButton += 1;
+                    }
+               if  (not (sf::IntRect(430, 300, 200, 80).contains(sf::Mouse::getPosition(app))))
+               {
+
+                     sPlay.setPosition(sf::Vector2f(430, 300));
+                     app.draw(sPlay); 
+                }
+                
+                }
             }
 
 
             if (playButton > 0)
             {
+
+
                 x += vx*dt;
                 for (int i = 0; i < n; i++)
                     if (FloatRect(x + 3, y + 3, 6, 6).intersects(block[i].getGlobalBounds()))
