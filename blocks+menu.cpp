@@ -2,19 +2,21 @@
 #include <SFML/Window.hpp>
 #include <time.h>
 #include <iostream>
+#include <sstream>
+#include <fstream>
 #include <list>
 using namespace sf;
 
 int main()
 {
-
-
-
-    
+    bool gameover = false;
     srand(time(0));
 
     RenderWindow app(VideoMode(1000, 560), "_" );
     app.setFramerateLimit(60);
+
+
+               
 
     Texture t1, t2, t3, t4, t5, t6, t7, t8,t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21;
     t1.loadFromFile("bl1.png");
@@ -31,24 +33,19 @@ int main()
     t12.loadFromFile("records.png");
     t13.loadFromFile("score.png");
     t14.loadFromFile("menu.png");
-    t15.loadFromFile("level1.png");
-    t16.loadFromFile("level2.png");
-    t17.loadFromFile("level3.png");
-    t18.loadFromFile("continue.png");
+//    t15.loadFromFile("level1.png");
+//    t16.loadFromFile("level2.png");
+//    t17.loadFromFile("level3.png");
+//    t18.loadFromFile("continue.png");
     t19.loadFromFile("recordsBig.png");
     t20.loadFromFile("playBig.png");
     t21.loadFromFile("menuBig.png");
 
-
-
-   
-
-
-    Sprite sBackground(t2), sBall(t3), sPaddle(t4), sMenu(t9), sPlay(t10), sArcanoid(t11), sRecords(t12), 
-    sScore(t13), sMenuBut(t14), sLevel1(t15), sLevel2(t16), sLevel3(t17), sContinue(t18), 
+    Sprite sBackground(t2), sBall(t3), sPaddle(t4), sMenu(t9), sPlay(t10), sArcanoid(t11), sRecords(t12),
+    sScore(t13), sMenuBut(t14), sLevel1(t15), sLevel2(t16), sLevel3(t17), sContinue(t18),
     sRecordsBig(t19), sPlayBig(t20), sMenuBig(t21);
     sPaddle.setPosition(470 , 550);
-    sPlay.setPosition(sf::Vector2f(430, 300)); 
+    sPlay.setPosition(sf::Vector2f(430, 300));
     sArcanoid.setPosition(sf::Vector2f(200,60));
     sRecords.setPosition(sf::Vector2f(380, 400));
     sScore.setPosition(sf::Vector2f(150, 300));
@@ -63,7 +60,7 @@ int main()
 
 
     Sprite block[10000];
-    
+
 
     float dt = 0.1;
     int n = 0;
@@ -71,7 +68,7 @@ int main()
     int playButton = 0;
     int recButton = 0;
     int menuButton = 0;
-    float vx=60; 
+    float vx=60;
     float vy=50;
     float x=300;
     float y=300;
@@ -82,47 +79,42 @@ int main()
     for (int i = 0; i <= 19; i++)
     {
         for (int j = 0; j <= 1; j++)
-          {  
-             
+          {
+
              block[n].setTexture(t1);
              block[n].setPosition(i*50,j*24);
              n++;
           }
-     
+
         for (int j = 2; j <= 3; j++)
           {
-           
+
              block[n].setTexture(t5);
              block[n].setPosition(i*50,j*24);
              n++;
           }
         for (int j = 4; j <= 5; j++)
           {
-            
+
              block[n].setTexture(t6);
              block[n].setPosition(i*50,j*24);
              n++;
           }
         for (int j = 6; j <= 7; j++)
           {
-           
+
              block[n].setTexture(t7);
              block[n].setPosition(i*50,j*24);
              n++;
           }
         for (int j = 8; j <= 9; j++)
           {
-           
+
              block[n].setTexture(t8);
              block[n].setPosition(i*50,j*24);
              n++;
           }
     }
-    
-
-
-              
-
 
     while (app.isOpen())
     {
@@ -132,27 +124,37 @@ int main()
          if (event.type == Event::Closed)
              app.close();
        }
+        sf::Font font;
+        font.loadFromFile("Neons_demo.otf");
+       /* std::ifstream g("tableRecords.txt");
+        char s[1000];
+        g.seekg(0, g.end);
+        g.read(s, g.tellg());
+        sf::Text recordsText(g.char(), font, 10);
+        recordsText.setPosition(500, 50);
+        recordsText.setFillColor(sf::Color(200, 0, 100));*/
+
          app.draw(sMenu);
          app.draw(sPlay);
          app.draw(sArcanoid);
          app.draw(sRecords);
 
-        
-         if (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app))) 
+
+         if (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app)))
         {
-             
+
              app.draw(sMenu);
              app.draw(sPlay);
              app.draw(sArcanoid);
              app.draw(sRecordsBig);
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
                 recButton += 1;
             }
             if  (not (sf::IntRect(380, 400, 200, 100).contains(sf::Mouse::getPosition(app))))
                {
                      sRecords.setPosition(sf::Vector2f(380, 400));
-                     app.draw(sPlay); 
+                     app.draw(sPlay);
                 }
         }
 
@@ -162,6 +164,7 @@ int main()
                 app.draw(sMenu);
                 app.draw(sRecords);
                 app.draw(sMenuBut);
+               // app.draw(recordsText);
 
             }
             if  ((sf::IntRect(30, 450, 200, 100).contains(sf::Mouse::getPosition(app))) && (recButton > 0))
@@ -169,12 +172,12 @@ int main()
                 app.draw(sMenu);
                 app.draw(sRecords);
                 app.draw(sMenuBig);
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 {
                     menuButton += 2;
                 }
             }
-            
+
            if (menuButton > 0)
            {
              sRecords.setPosition(sf::Vector2f(380, 400));
@@ -195,8 +198,8 @@ int main()
                 app.draw(sPlayBig);
                 app.draw(sArcanoid);
                 app.draw(sRecords);
-                
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                     {
                          playButton += 1;
                     }
@@ -204,21 +207,19 @@ int main()
                {
 
                      sPlay.setPosition(sf::Vector2f(430, 300));
-                     app.draw(sPlay); 
+                     app.draw(sPlay);
                 }
-                
+
                 }
             }
 
 
             if (playButton > 0)
             {
-
-
                 x += vx*dt;
                 for (int i = 0; i < n; i++)
                     if (FloatRect(x + 3, y + 3, 6, 6).intersects(block[i].getGlobalBounds()))
-                         {  
+                         {
                             block[i].setPosition(-100,0);
                             scoreCount += int(1);
                             vx = -vx;
@@ -233,9 +234,9 @@ int main()
                             vy = -vy;
                         }
 
-                if (x < 0 || x > 1000)  
+                if (x < 0 || x > 1000)
                     vx = -vx;
-                if (y < 0) 
+                if (y < 0)
                     vy = -vy;
 
                 if (y > 560)
@@ -249,7 +250,6 @@ int main()
                         //death
                         if ( deathCount < deathMaxCount )
                         {
-                                
                                 deathCount++;
                                 sPaddle.setPosition(470,550);
                                 vx = 50;
@@ -257,42 +257,53 @@ int main()
                                 x = 300;
                                 y = 300;
                         }
-
-                    
                         else
-
                         {
-                           
-                          //  std::cout << scoreCount << std::endl;
-                            return 0;
-                            
+                            gameover = true;
                         }
                     }
                 }
 
-                if (Keyboard::isKeyPressed(Keyboard::Right)) 
-                    sPaddle.move(6, 0);
-                if (Keyboard::isKeyPressed(Keyboard::Left)) 
-                    sPaddle.move(-6, 0);
+                if (!gameover) {
+                    if (Keyboard::isKeyPressed(Keyboard::Right))
+                        sPaddle.move(10, 0);
+                    if (Keyboard::isKeyPressed(Keyboard::Left))
+                        sPaddle.move(-10, 0);
 
-                if ( FloatRect(x, y, 12, 12).intersects(sPaddle.getGlobalBounds())) 
-                    vy = -vy;
+                    if ( FloatRect(x, y, 12, 12).intersects(sPaddle.getGlobalBounds()))
+                        vy = -vy;
+                    sBall.setPosition(x,y);
+                    app.clear();
+                    app.draw(sBackground);
+                    app.draw(sBall);
+                    app.draw(sPaddle);
+                    for (int i = 0; i < n; i++)
+                        app.draw(block[i]);
+                }
+            }
 
-                sBall.setPosition(x,y);
+            if (gameover)
+            {
                 app.clear();
-                app.draw(sBackground);
-                app.draw(sBall);
-                app.draw(sPaddle);
-                for (int i = 0; i < n; i++)
-                    app.draw(block[i]);
+                
+                std::stringstream ss;
+                ss << scoreCount;
+                sf::Text scoreText (ss.str(), font, 150);
+                scoreText.setFillColor(sf::Color(0, 183, 255));
+                scoreText.setPosition(550,230);
+                app.clear();
+                app.draw(sMenu);
+                app.draw(scoreText);
+                app.draw(sScore);
+                app.display();
+                sf::sleep(sf::seconds(5));
+                return 0;
+            } 
+            else 
+            {
+                app.display();
             }
-           
-
-            app.display();
-            }
-            
-
-delete [] block;
-return 0;
+        }
+    delete [] block;
+    return 0;
 }
-  
